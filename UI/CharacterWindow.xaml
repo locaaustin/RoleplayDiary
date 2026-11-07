@@ -1,0 +1,155 @@
+<Window x:Class="RoleplayDiary.CharacterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Heading}"
+        Width="700"
+        Background="{StaticResource WindowBrush}"
+        FontFamily="{StaticResource UiFont}"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner">
+
+    <StackPanel Margin="28,24,28,22">
+        <TextBlock Style="{StaticResource TitleText}" Text="{Binding Heading}" />
+        <TextBlock Margin="0,6,0,20"
+                   Style="{StaticResource MutedText}"
+                   Text="Only the name is required. Everything else can be filled in later, as the story goes."
+                   TextWrapping="Wrap" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Portrait: staged photo, current cover, or initials  -->
+            <StackPanel Grid.Column="0" Width="148">
+                <Grid Height="178">
+                    <Border Style="{StaticResource TileBorder}" />
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="36"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextFaintBrush}"
+                               Text="{Binding Initials}" />
+                    <Border CornerRadius="12"
+                            Visibility="{Binding PreviewPath, Converter={StaticResource StringToVisibility}}">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding PreviewPath, Converter={StaticResource PathToImage}, ConverterParameter=420}"
+                                        Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
+                </Grid>
+
+                <Button Margin="0,10,0,0"
+                        Padding="10,7"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="OnAddPhotos"
+                        Content="Add photos" />
+
+                <Button Margin="0,4,0,0"
+                        FontSize="11"
+                        Style="{StaticResource GhostButton}"
+                        Click="OnClearPhotos"
+                        Content="Clear"
+                        Visibility="{Binding HasPendingPhotos, Converter={StaticResource BoolToVisibility}}" />
+
+                <TextBlock Margin="0,8,0,0"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource CaptionText}"
+                           Text="{Binding PhotoSummary}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+
+            <!--  Name, nickname, age, status  -->
+            <StackPanel Grid.Column="2">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="NAME" />
+                    <TextBox x:Name="NameBox"
+                             Style="{StaticResource InputTextBox}"
+                             Tag="Who are they?"
+                             Text="{Binding Draft.Name, UpdateSourceTrigger=PropertyChanged}"
+                             TextChanged="OnNameChanged" />
+                </StackPanel>
+
+                <StackPanel Margin="0,14,0,0">
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="NICKNAME" />
+                    <TextBox Style="{StaticResource InputTextBox}" Tag="What people call them" Text="{Binding Draft.Nickname}" />
+                </StackPanel>
+
+                <Grid Margin="0,14,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="14" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="AGE" />
+                        <TextBox MaxLength="3"
+                                 Style="{StaticResource InputTextBox}"
+                                 Tag="31"
+                                 PreviewTextInput="OnDigitsOnly"
+                                 Text="{Binding Draft.AgeText}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="STATUS" />
+                        <ComboBox Style="{StaticResource ThemedComboBox}"
+                                  ItemsSource="{Binding StatusChoices}"
+                                  SelectedItem="{Binding Draft.Status}" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Margin="0,14,0,0">
+            <TextBlock Style="{StaticResource FieldLabel}" Text="SERVER OR COMMUNITY" />
+            <TextBox Style="{StaticResource InputTextBox}" Tag="GTA World, a fantasy server, a tabletop group" Text="{Binding Draft.Server}" />
+        </StackPanel>
+
+        <Grid Margin="0,14,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Style="{StaticResource FieldLabel}" Text="OCCUPATION" />
+                <TextBox Style="{StaticResource InputTextBox}" Text="{Binding Draft.Occupation}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2">
+                <TextBlock Style="{StaticResource FieldLabel}" Text="FACTION OR AFFILIATION" />
+                <TextBox Style="{StaticResource InputTextBox}" Tag="Faction, family, crew" Text="{Binding Draft.Affiliation}" />
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Margin="0,14,0,0">
+            <TextBlock Style="{StaticResource FieldLabel}" Text="BACKGROUND" />
+            <TextBox Height="140"
+                     Style="{StaticResource MultilineTextBox}"
+                     Tag="Where they came from, and anything that was true before the story started."
+                     Text="{Binding Draft.Background}" />
+        </StackPanel>
+
+        <StackPanel Margin="0,22,0,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <Button Style="{StaticResource GhostButton}"
+                    Click="OnCancel"
+                    Content="Cancel"
+                    IsCancel="True" />
+            <Button Margin="8,0,0,0"
+                    Style="{StaticResource PrimaryButton}"
+                    Click="OnSave"
+                    Content="{Binding SaveLabel}"
+                    IsDefault="True"
+                    IsEnabled="{Binding CanSave}" />
+        </StackPanel>
+    </StackPanel>
+</Window>

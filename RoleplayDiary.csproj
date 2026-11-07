@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--
+      net8.0-windows: .NET 8 is long-term support and is the desktop runtime most
+      likely to be installed already on a gaming PC. "-windows" is what allows WPF.
+    -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>RoleplayDiary</RootNamespace>
+    <AssemblyName>RoleplayDiary</AssemblyName>
+    <Version>0.4.0</Version>
+    <AssemblyTitle>Roleplay Diary</AssemblyTitle>
+    <Product>Roleplay Diary</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      The Windows Desktop SDK's implicit usings leave out System.IO, and this app
+      touches files everywhere. Adding it here keeps it off the top of every file.
+    -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SQLite, used directly rather than through an ORM. -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.11" />
+    <!-- PDF export. Free under its Community licence; see the README. -->
+    <PackageReference Include="QuestPDF" Version="2024.12.3" />
+  </ItemGroup>
+
+</Project>

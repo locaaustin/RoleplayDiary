@@ -1,0 +1,440 @@
+<Window x:Class="RoleplayDiary.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Roleplay Diary"
+        Width="1280"
+        Height="840"
+        MinWidth="1000"
+        MinHeight="660"
+        Background="{StaticResource WindowBrush}"
+        FontFamily="{StaticResource UiFont}"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="344" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  ===================== Sidebar =====================  -->
+        <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}">
+            <DockPanel Margin="18,20,18,14">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Style="{StaticResource TitleText}" Text="Roleplay Diary" />
+                    <TextBlock Style="{StaticResource FaintText}" Text="alpha 0.4.0" />
+
+                    <TextBox Margin="0,18,0,0"
+                             Style="{StaticResource InputTextBox}"
+                             Tag="Search by name, nickname or server"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <ListBox Margin="0,12,0,0"
+                             Style="{StaticResource ChipListBox}"
+                             ItemsSource="{Binding StatusFilters}"
+                             SelectedItem="{Binding SelectedFilter}" />
+
+                    <Button Margin="0,14,0,0"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding NewCharacterCommand}"
+                            Content="New character" />
+                </StackPanel>
+
+                <TextBlock DockPanel.Dock="Bottom"
+                           Margin="0,10,0,0"
+                           Style="{StaticResource FaintText}"
+                           Text="{Binding RosterCountLabel}" />
+
+                <ListBox Margin="0,14,0,0"
+                         Style="{StaticResource RosterListBox}"
+                         ItemsSource="{Binding VisibleCharacters}"
+                         SelectedItem="{Binding SelectedCharacter}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10,9">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0" Width="46" Height="46">
+                                    <Border Style="{StaticResource TileBorder}" CornerRadius="10" />
+                                    <TextBlock HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextFaintBrush}"
+                                               Text="{Binding Character.Initials}" />
+                                    <Border CornerRadius="10"
+                                            Visibility="{Binding PortraitPath, Converter={StaticResource StringToVisibility}}">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding PortraitPath, Converter={StaticResource PathToImage}, ConverterParameter=120}"
+                                                        Stretch="UniformToFill" />
+                                        </Border.Background>
+                                    </Border>
+                                </Grid>
+
+                                <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Width="7"
+                                                 Height="7"
+                                                 VerticalAlignment="Center"
+                                                 Fill="{Binding Status, Converter={StaticResource StatusToBrush}}" />
+                                        <TextBlock Margin="7,0,0,0"
+                                                   Style="{StaticResource HeadingText}"
+                                                   FontSize="13"
+                                                   Text="{Binding Name}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <TextBlock Margin="0,2,0,0"
+                                               Style="{StaticResource CaptionText}"
+                                               Text="{Binding Meta}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Column="1" Background="{StaticResource AppBorderBrush}" />
+
+        <!--  ===================== Nothing open =====================  -->
+        <StackPanel Grid.Column="2"
+                    MaxWidth="420"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding Detail, Converter={StaticResource NullToVisibility}}">
+            <TextBlock HorizontalAlignment="Center"
+                       Style="{StaticResource TitleText}"
+                       Text="{Binding PlaceholderTitle}" />
+            <TextBlock Margin="0,8,0,0"
+                       Style="{StaticResource MutedText}"
+                       Text="{Binding PlaceholderBody}"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap" />
+            <Button Margin="0,18,0,0"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding NewCharacterCommand}"
+                    Content="New character" />
+        </StackPanel>
+
+        <!--  ===================== The open character =====================  -->
+        <DockPanel Grid.Column="2"
+                   DataContext="{Binding Detail}"
+                   Visibility="{Binding DataContext.Detail,
+                                        RelativeSource={RelativeSource AncestorType=Window},
+                                        Converter={StaticResource NotNullToVisibility}}">
+
+            <!--  Hero  -->
+            <Border DockPanel.Dock="Top"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource AppBorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="30,26,30,22">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0"
+                          Width="96"
+                          Height="96"
+                          VerticalAlignment="Top">
+                        <Border Style="{StaticResource TileBorder}" CornerRadius="16" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="30"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextFaintBrush}"
+                                   Text="{Binding Initials}" />
+                        <Border CornerRadius="16"
+                                Visibility="{Binding PortraitPath, Converter={StaticResource StringToVisibility}}">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding PortraitPath, Converter={StaticResource PathToImage}, ConverterParameter=280}"
+                                            Stretch="UniformToFill" />
+                            </Border.Background>
+                        </Border>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1"
+                                Margin="22,0,16,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource DisplayText}"
+                                   Text="{Binding Name}"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Margin="0,2,0,0"
+                                   Style="{StaticResource MutedText}"
+                                   Text="{Binding QuotedNickname}"
+                                   Visibility="{Binding QuotedNickname, Converter={StaticResource StringToVisibility}}" />
+                        <TextBlock Margin="0,4,0,0"
+                                   Style="{StaticResource MutedText}"
+                                   Text="{Binding FactsLine}"
+                                   TextWrapping="Wrap"
+                                   Visibility="{Binding FactsLine, Converter={StaticResource StringToVisibility}}" />
+                        <TextBlock Margin="0,4,0,0"
+                                   Style="{StaticResource FaintText}"
+                                   Text="{Binding ArchivedLabel}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                            <Button Style="{StaticResource DangerButton}"
+                                    Command="{Binding DeleteCharacterCommand}"
+                                    Content="Delete" />
+                            <Button Margin="8,0,0,0"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding EditProfileCommand}"
+                                    Content="Edit profile" />
+                            <Button Margin="8,0,0,0"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding ExportPdfCommand}"
+                                    Content="Export PDF" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,12,0,0" HorizontalAlignment="Right">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="STATUS" />
+                            <ComboBox Width="150"
+                                      Style="{StaticResource ThemedComboBox}"
+                                      Foreground="{Binding Status, Converter={StaticResource StatusToBrush}}"
+                                      ItemsSource="{Binding StatusChoices}"
+                                      SelectedItem="{Binding Status}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TabControl Style="{StaticResource UnderlineTabControl}">
+
+                <!--  Story tab  -->
+                <TabItem Header="{Binding StoryHeader}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="30,20,30,26">
+                            <Grid Margin="0,0,0,12">
+                                <TextBlock VerticalAlignment="Center"
+                                           Style="{StaticResource MutedText}"
+                                           Text="Oldest first, the way the story happened." />
+                                <Button HorizontalAlignment="Right"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Command="{Binding AddEntryCommand}"
+                                        Content="Add entry" />
+                            </Grid>
+
+                            <StackPanel Visibility="{Binding Entries.Count, Converter={StaticResource CountToVisibility}}">
+                                <ItemsControl ItemsSource="{Binding Entries}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0,0,0,10"
+                                                    Padding="16,14"
+                                                    Style="{StaticResource CardBorder}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="96" />
+                                                        <ColumnDefinition Width="1" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                                                        <TextBlock Style="{StaticResource BaseText}"
+                                                                   FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   Text="{Binding ShortDateLabel}" />
+                                                        <TextBlock Margin="0,2,0,0"
+                                                                   Style="{StaticResource CaptionText}"
+                                                                   Text="{Binding KindLabel}" />
+                                                    </StackPanel>
+
+                                                    <Border Grid.Column="1"
+                                                            Margin="0,0,14,0"
+                                                            Background="{StaticResource AppBorderBrush}" />
+
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                                                        <TextBlock Style="{StaticResource HeadingText}"
+                                                                   Text="{Binding Title}"
+                                                                   TextWrapping="Wrap" />
+                                                        <TextBlock Margin="0,5,0,0"
+                                                                   Style="{StaticResource MutedText}"
+                                                                   Text="{Binding Body}"
+                                                                   TextWrapping="Wrap"
+                                                                   Visibility="{Binding Body, Converter={StaticResource StringToVisibility}}" />
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="3" VerticalAlignment="Top">
+                                                        <Button Width="72"
+                                                                Style="{StaticResource GhostButton}"
+                                                                Command="{Binding DataContext.EditEntryCommand,
+                                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                CommandParameter="{Binding}"
+                                                                Content="Edit" />
+                                                        <Button Width="72"
+                                                                Margin="0,2,0,0"
+                                                                Style="{StaticResource DangerButton}"
+                                                                Command="{Binding DataContext.DeleteEntryCommand,
+                                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                CommandParameter="{Binding}"
+                                                                Content="Delete" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,40,0,0"
+                                        Visibility="{Binding Entries.Count, Converter={StaticResource EmptyCountToVisibility}}">
+                                <TextBlock HorizontalAlignment="Center"
+                                           Style="{StaticResource HeadingText}"
+                                           Text="Nothing has happened yet" />
+                                <TextBlock Margin="0,8,0,0"
+                                           MaxWidth="400"
+                                           Style="{StaticResource MutedText}"
+                                           Text="Add the first thing that mattered - where they arrived, who they met, what they lost."
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!--  Gallery tab  -->
+                <TabItem Header="{Binding GalleryHeader}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="30,20,30,26">
+                            <Grid Margin="0,0,0,12">
+                                <TextBlock VerticalAlignment="Center"
+                                           Style="{StaticResource MutedText}"
+                                           Text="Photos are copied into the diary, so the originals can move." />
+                                <Button HorizontalAlignment="Right"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Command="{Binding AddPhotosCommand}"
+                                        Content="Add photos" />
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding Photos}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="260"
+                                                Margin="0,0,12,12"
+                                                Padding="12"
+                                                Style="{StaticResource CardBorder}">
+                                            <StackPanel>
+                                                <Grid Height="150">
+                                                    <Border Style="{StaticResource TileBorder}" CornerRadius="9" />
+                                                    <TextBlock HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               Style="{StaticResource FaintText}"
+                                                               Text="missing file" />
+                                                    <Border CornerRadius="9"
+                                                            Visibility="{Binding FullPath, Converter={StaticResource StringToVisibility}}">
+                                                        <Border.Background>
+                                                            <ImageBrush ImageSource="{Binding FullPath, Converter={StaticResource PathToImage}, ConverterParameter=520}"
+                                                                        Stretch="UniformToFill" />
+                                                        </Border.Background>
+                                                    </Border>
+                                                </Grid>
+
+                                                <TextBox Margin="0,9,0,0"
+                                                         Style="{StaticResource InputTextBox}"
+                                                         Tag="Add a caption"
+                                                         Text="{Binding Caption, UpdateSourceTrigger=LostFocus}" />
+
+                                                <Grid Margin="0,9,0,0">
+                                                    <Border Padding="10,2"
+                                                            HorizontalAlignment="Left"
+                                                            Background="{StaticResource AccentSoftBrush}"
+                                                            BorderBrush="{StaticResource AccentBrush}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="9"
+                                                            Visibility="{Binding IsCover, Converter={StaticResource BoolToVisibility}}">
+                                                        <TextBlock FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{StaticResource AccentBrush}"
+                                                                   Text="Cover" />
+                                                    </Border>
+
+                                                    <Button Padding="8,4"
+                                                            HorizontalAlignment="Left"
+                                                            FontSize="11"
+                                                            Style="{StaticResource GhostButton}"
+                                                            Command="{Binding DataContext.SetCoverCommand,
+                                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="Set as cover">
+                                                        <Button.Visibility>
+                                                            <Binding Converter="{StaticResource InverseBoolToVisibility}" Path="IsCover" />
+                                                        </Button.Visibility>
+                                                    </Button>
+
+                                                    <Button Padding="8,4"
+                                                            HorizontalAlignment="Right"
+                                                            FontSize="11"
+                                                            Style="{StaticResource DangerButton}"
+                                                            Command="{Binding DataContext.RemovePhotoCommand,
+                                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="Remove" />
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <StackPanel Margin="0,40,0,0"
+                                        Visibility="{Binding Photos.Count, Converter={StaticResource EmptyCountToVisibility}}">
+                                <TextBlock HorizontalAlignment="Center"
+                                           Style="{StaticResource HeadingText}"
+                                           Text="No photos yet" />
+                                <TextBlock Margin="0,8,0,0"
+                                           MaxWidth="400"
+                                           Style="{StaticResource MutedText}"
+                                           Text="Screenshots of your character as they change over time. The first one becomes their cover."
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!--  Background tab  -->
+                <TabItem Header="Background">
+                    <DockPanel Margin="30,20,30,22">
+                        <TextBlock DockPanel.Dock="Top"
+                                   Margin="0,0,0,12"
+                                   Style="{StaticResource MutedText}"
+                                   Text="The fixed part of the story. Things that happen later belong on the Story tab."
+                                   TextWrapping="Wrap" />
+
+                        <StackPanel DockPanel.Dock="Bottom"
+                                    Margin="0,12,0,0"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal">
+                            <Button Style="{StaticResource GhostButton}"
+                                    Command="{Binding RevertBackgroundCommand}"
+                                    Content="Revert"
+                                    Visibility="{Binding HasUnsavedBackground, Converter={StaticResource BoolToVisibility}}" />
+                            <Button Margin="8,0,0,0"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding SaveBackgroundCommand}"
+                                    Content="Save background" />
+                        </StackPanel>
+
+                        <TextBox Style="{StaticResource MultilineTextBox}"
+                                 Tag="Where they came from, and anything that was true before the story started."
+                                 Text="{Binding Background, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
+</Window>

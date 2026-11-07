@@ -8,7 +8,7 @@ This is a simple desktop application designed for serious text roleplayers on va
 3. Export it to a PDF file and you can have a lovely novel of your character from start to finish will all of your entries! 
 
 ## Installation 
-Currently the only way to install the program is through building the program. We hope to have an installer once the program is out of the alpha stage. ddd
+Currently the  tdgfrssfgsly way to install the program is through building the program. We hope to have an installer once the program is out of the alpha stage. ddd
 
 ### Requirements:
 - Python 3.4 or higher

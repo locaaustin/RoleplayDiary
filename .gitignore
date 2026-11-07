@@ -1,19 +1,12 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-build/
-dist/
-.venv/
-venv/
-env/
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
 
 # Tooling
-.ruff_cache/
-.mypy_cache/
-.pytest_cache/
-.idea/
 .vs/
+.idea/
 .vscode/
 
 # The diary itself - never commit someone's characters
