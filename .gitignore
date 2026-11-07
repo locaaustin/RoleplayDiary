@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Tooling
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.idea/
+.vs/
+.vscode/
+
+# The diary itself - never commit someone's characters
+*.db
+*.db-shm
+*.db-wal
+*.pdf
+media/
+exports/
+crash.log
