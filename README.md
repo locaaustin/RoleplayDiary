@@ -1,6 +1,7 @@
 # Roleplay Diary 
 
-This is a simple desktop application designed for serious text roleplayers on various different servers. As a text roleplayer, it is quite common to go very in-depth with our applications. The purpose of this application is to allow for us to keep track of our characters and look back on memories that we had with them. 
+This app was made by roleplayers for roleplayers! Roleplay Diary is a simple desktop application that allows for roleplayers to log their character stories from start to finish. At any point,  you can export your character story to a PDF file and follow all the events about your character. 
+In addition, this application can be useful for people who play on serious roleplay environemts and they want to remember things about their character and also thing of new things to do without getting bored. 
 
 ## Features 
 1. Create a character and include backstory and photos. 
@@ -8,12 +9,4 @@ This is a simple desktop application designed for serious text roleplayers on va
 3. Export it to a PDF file and you can have a lovely novel of your character from start to finish will all of your entries! 
 
 ## Installation 
-Currently the  tdgfrssfgsly way to install the program is through building the program. We hope to have an installer once the program is out of the alpha stage. ddd
-
-### Requirements:
-- Python 3.4 or higher
-- Reportlab library >= 4.0, <6
-- pillow>=10.0
-
-### How to start; 
-Simply click on the RoleplayDiary.pyw file and everything will be set up.  
+The application has been built using C#. Just install the programs and put them into C# then run App.xaml as the starting application. WE will be making an official installer in later releases but at the moment the project is considered to be in Alpha. 
