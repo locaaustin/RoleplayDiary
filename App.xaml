@@ -5,7 +5,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--  Every colour and control style the app wears.  -->
-                <ResourceDictionary Source="UI/Theme.xaml" />
+                <ResourceDictionary Source="Views/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
