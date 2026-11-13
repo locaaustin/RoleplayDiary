@@ -1,6 +1,7 @@
-<Window x:Class="RoleplayDiary.Views.CharacterWindow"
+<local:BindableWindow x:Class="RoleplayDiary.Views.CharacterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:RoleplayDiary.Views"
         Title="{Binding Heading}"
         Width="700"
         Background="{StaticResource WindowBrush}"
@@ -152,4 +153,4 @@
                     IsEnabled="{Binding CanSave}" />
         </StackPanel>
     </StackPanel>
-</Window>
+</local:BindableWindow>
