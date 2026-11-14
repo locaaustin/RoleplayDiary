@@ -22,7 +22,7 @@
             <DockPanel Margin="18,20,18,14">
                 <StackPanel DockPanel.Dock="Top">
                     <TextBlock Style="{StaticResource TitleText}" Text="Roleplay Diary" />
-                    <TextBlock Style="{StaticResource FaintText}" Text="alpha 0.4.0" />
+                    <TextBlock Style="{StaticResource FaintText}" Text="alpha 1.0" />
 
                     <TextBox Margin="0,18,0,0"
                              Style="{StaticResource InputTextBox}"
@@ -98,7 +98,7 @@
             </DockPanel>
         </Border>
 
-        <Border Grid.Column="1" Background="{StaticResource AppBorderBrush}" />
+        <Border Grid.Column="1" Background="{StaticResource AppBorderStrongBrush}" />
 
         <!--  ===================== Nothing open =====================  -->
         <StackPanel Grid.Column="2"

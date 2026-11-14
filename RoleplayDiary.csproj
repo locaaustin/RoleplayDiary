@@ -12,7 +12,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>RoleplayDiary</RootNamespace>
     <AssemblyName>RoleplayDiary</AssemblyName>
-    <Version>0.4.0</Version>
+    <Version>1.0.0-alpha</Version>
     <AssemblyTitle>Roleplay Diary</AssemblyTitle>
     <Product>Roleplay Diary</Product>
   </PropertyGroup>
