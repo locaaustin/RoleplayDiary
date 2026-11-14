@@ -20,27 +20,41 @@
     <local:CountToVisibilityConverter x:Key="CountToVisibility" />
     <local:EmptyCountToVisibilityConverter x:Key="EmptyCountToVisibility" />
 
-    <!--  ===================== Palette =====================  -->
-    <SolidColorBrush x:Key="WindowBrush" Color="#0E0F13" />
-    <SolidColorBrush x:Key="SurfaceBrush" Color="#15171D" />
-    <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="#1C1F27" />
-    <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#232733" />
-    <SolidColorBrush x:Key="AppBorderBrush" Color="#272B36" />
-    <SolidColorBrush x:Key="AppBorderStrongBrush" Color="#39404F" />
+    <!--
+        Palette. One violet (hue 268°), varied the way a real surface varies:
+        darker = lower brightness, higher saturation, hue toward blue (240°);
+        lighter = higher brightness, lower saturation, hue toward magenta (300°).
+        Neutrals are that same hue with the saturation taken almost all the way
+        down, so the grays belong to the accent. The accent itself is only the
+        violet: fills on primary actions, lines on focus, selection, and tabs.
+        Alive / dead / shelved are the only other hues, and only because they
+        mean something. Text on the lightest surface it sits on stays at or
+        above 4.5:1; the accent as a line on a selected row stays above 3:1.
+    -->
+    <SolidColorBrush x:Key="WindowBrush" Color="#0D0C0F" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#222126" />
+    <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="#343238" />
+    <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#46444A" />
+    <SolidColorBrush x:Key="SurfacePressedBrush" Color="#201F26" />
+    <SolidColorBrush x:Key="AppBorderBrush" Color="#4E4B57" />
+    <SolidColorBrush x:Key="AppBorderStrongBrush" Color="#726F7A" />
 
-    <SolidColorBrush x:Key="TextBrush" Color="#ECEEF3" />
-    <SolidColorBrush x:Key="TextMutedBrush" Color="#8B91A1" />
-    <SolidColorBrush x:Key="TextFaintBrush" Color="#676E80" />
+    <SolidColorBrush x:Key="TextBrush" Color="#F0EDF7" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="#BDB9C7" />
+    <SolidColorBrush x:Key="TextFaintBrush" Color="#A3A0AD" />
 
-    <SolidColorBrush x:Key="AccentBrush" Color="#7C5CFF" />
-    <SolidColorBrush x:Key="AccentHoverBrush" Color="#8E74FF" />
-    <SolidColorBrush x:Key="AccentPressedBrush" Color="#6A49EC" />
-    <SolidColorBrush x:Key="AccentSoftBrush" Color="#231E3D" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#BD8BF7" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#A677ED" />
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#9A6DE8" />
+    <SolidColorBrush x:Key="OnAccentBrush" Color="#1A1921" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#3D3452" />
+    <SolidColorBrush x:Key="AccentSelectionBrush" Color="#3C3261" />
 
-    <SolidColorBrush x:Key="AliveBrush" Color="#3ECF8E" />
-    <SolidColorBrush x:Key="DeadBrush" Color="#F05365" />
-    <SolidColorBrush x:Key="ShelvedBrush" Color="#E8A33D" />
-    <SolidColorBrush x:Key="DangerSoftBrush" Color="#2A1A1F" />
+    <SolidColorBrush x:Key="AliveBrush" Color="#6BC793" />
+    <SolidColorBrush x:Key="DeadBrush" Color="#FA7570" />
+    <SolidColorBrush x:Key="ShelvedBrush" Color="#CC9E5A" />
+    <SolidColorBrush x:Key="DangerSoftBrush" Color="#472C2B" />
+    <SolidColorBrush x:Key="DangerPressedBrush" Color="#3D2121" />
 
     <FontFamily x:Key="UiFont">Segoe UI</FontFamily>
 
@@ -120,20 +134,35 @@
                               VerticalAlignment="Center" />
         </Border>
         <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Shell" Property="Opacity" Value="0.88" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="Shell" Property="Opacity" Value="0.72" />
-            </Trigger>
+            <!--
+                Hover and press are real colour variations set by each style.
+                Fading the whole button with opacity only mixes in black, which
+                drops brightness and never adds saturation.
+            -->
             <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="Shell" Property="Opacity" Value="0.45" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <Style x:Key="AccentFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="-3"
+                               RadiusX="10"
+                               RadiusY="10"
+                               SnapsToDevicePixels="True"
+                               Stroke="{StaticResource AccentBrush}"
+                               StrokeThickness="1" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="BaseButton" TargetType="Button">
         <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource AccentFocusVisual}" />
         <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -146,13 +175,32 @@
     <Style x:Key="PrimaryButton" BasedOn="{StaticResource BaseButton}" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource AccentBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource AccentHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentPressedBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource AccentPressedBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="SecondaryButton" BasedOn="{StaticResource BaseButton}" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource AppBorderStrongBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource SurfacePressedBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="GhostButton" BasedOn="{StaticResource BaseButton}" TargetType="Button">
@@ -163,6 +211,10 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource SurfaceHoverBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
             </Trigger>
         </Style.Triggers>
@@ -177,6 +229,9 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource DangerSoftBrush}" />
             </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource DangerPressedBrush}" />
+            </Trigger>
         </Style.Triggers>
     </Style>
 
@@ -186,7 +241,8 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         <Setter Property="CaretBrush" Value="{StaticResource TextBrush}" />
-        <Setter Property="SelectionBrush" Value="{StaticResource AccentBrush}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource AccentSelectionBrush}" />
+        <Setter Property="SelectionTextBrush" Value="{StaticResource TextBrush}" />
         <Setter Property="Padding" Value="9,7" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
@@ -263,6 +319,10 @@
                                    Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Shell" Property="BorderBrush"
+                                    Value="{StaticResource AppBorderStrongBrush}" />
+                        </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter TargetName="Shell" Property="BorderBrush"
                                     Value="{StaticResource AccentBrush}" />
@@ -298,7 +358,7 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Shell" Property="Background"
-                                    Value="{StaticResource AccentBrush}" />
+                                    Value="{StaticResource AccentSoftBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
